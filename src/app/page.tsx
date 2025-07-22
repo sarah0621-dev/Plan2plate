@@ -1,103 +1,119 @@
+"use client";
+
 import Image from "next/image";
+import { FormEvent, useState } from "react";
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [budget, setBudget] = useState<number>(0);
+  const [days, setDays] = useState<number>(7);
+  const [cuisine, setCuisine] = useState<string[]>([]);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const handleCuisineChange = (c: string) => {
+    setCuisine((prev) =>
+      prev.includes(c) ? prev.filter((item) => item !== c) : [...prev, c]
+    );
+  };
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log({ budget, days, cuisine });
+  };
+
+  return (
+    <main className="font-sans flex flex-col items-center justify-center min-h-screen p-8">
+      <h1 className="text-3xl font-bold mb-6">Plan2Plate</h1>
+
+      <form
+        onSubmit={handleSubmit}
+        className="w-full max-w-md space-y-6 bg-gray-100 p-6 rounded-xl shadow"
+      >
+        <div className="flex flex-col">
+          <label htmlFor="budget" className="font-semibold mb-1">
+            💰 Budget ($)
+          </label>
+          <span className="text-lg font-semibold text-blue-600">
+            $ {budget}
+          </span>
+
+          <input
+            type="range"
+            min="0"
+            max="100"
+            value={budget}
+            onChange={(e) => setBudget(Number(e.target.value))}
+            className="
+          w-full max-w-md h-2
+          bg-gray-200 rounded-lg appearance-none cursor-pointer
+          accent-blue-500
+          [&::-webkit-slider-thumb]:appearance-none
+          [&::-webkit-slider-thumb]:h-5
+          [&::-webkit-slider-thumb]:w-5
+          [&::-webkit-slider-thumb]:rounded-full
+          [&::-webkit-slider-thumb]:bg-blue-500
+          [&::-webkit-slider-thumb]:border-2
+          [&::-webkit-slider-thumb]:border-white
+          [&::-webkit-slider-thumb]:shadow-md
+          [&::-webkit-slider-thumb]:hover:bg-blue-600
+          [&::-webkit-slider-thumb]:active:bg-blue-700
+          [&::-moz-range-thumb]:h-5
+          [&::-moz-range-thumb]:w-5
+          [&::-moz-range-thumb]:rounded-full
+          [&::-moz-range-thumb]:bg-blue-500
+          [&::-moz-range-thumb]:border-2
+          [&::-moz-range-thumb]:border-white
+        "
+          />
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+        {/* Days */}
+        <div className="flex flex-col">
+          <label htmlFor="days" className="font-semibold mb-1">
+            🗓️ Number of Days
+          </label>
+          <input
+            id="days"
+            type="number"
+            value={days}
+            onChange={(e) => setDays(Number(e.target.value))}
+            className="border p-2 rounded"
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+        </div>
+
+        {/* Cuisine */}
+        <div className="flex flex-col">
+          <span className="font-semibold mb-1"> 🍴 Preferred Cuisine</span>
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={cuisine.includes("Korean")}
+              onChange={() => handleCuisineChange("Korean")}
+            />
+            Korean
+          </label>
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={cuisine.includes("Japanese")}
+              onChange={() => handleCuisineChange("Japanese")}
+            />
+            Japanese
+          </label>
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={cuisine.includes("Western")}
+              onChange={() => handleCuisineChange("Western")}
+            />
+            Western
+          </label>
+        </div>
+
+        {/* Submit */}
+        <button
+          type="submit"
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
         >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+          Submit
+        </button>
+      </form>
+    </main>
   );
 }
