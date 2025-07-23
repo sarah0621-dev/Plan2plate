@@ -1,9 +1,11 @@
 "use client";
 
+import { generateMenu } from "@/lib/generateMenu";
 import Image from "next/image";
 import { FormEvent, useState } from "react";
 
 export default function Home() {
+  const [menu, setMenu] = useState<any[]>([]);
   const [budget, setBudget] = useState<number>(0);
   const [days, setDays] = useState<number>(7);
   const [cuisine, setCuisine] = useState<string[]>([]);
@@ -15,7 +17,9 @@ export default function Home() {
   };
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log({ budget, days, cuisine });
+    const result = generateMenu({ budget, days, cuisine });
+    setMenu(result);
+    console.log(menu);
   };
 
   return (
@@ -105,7 +109,6 @@ export default function Home() {
             Western
           </label>
         </div>
-
         {/* Submit */}
         <button
           type="submit"
