@@ -1,4 +1,4 @@
-import { mockRecipes } from "@/app/mockRecipes";
+import { mockRecipes } from "@/data/mockRecipes";
 
 interface GenerateMenuParams {
   budget: number;
