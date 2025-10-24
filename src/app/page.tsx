@@ -1,54 +1,79 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { useRouter } from "next/navigation";
+import { fetchMealPlan } from "@/lib/fetchMealPlan";
+
+type Meal = {
+  day: string;
+  meal: string;
+  ingredients: string[];
+  estimatedCost: number;
+};
 
 export default function Home() {
-  const router = useRouter();
 
-  const [budget, setBudget] = useState<number>(0);
+  const [budget, setBudget] = useState<number>(30);
   const [days, setDays] = useState<number>(7);
   const [cuisine, setCuisine] = useState<string[]>([]);
+  const [result, setResult] = useState<Meal[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const handleCuisineChange = (c: string) => {
     setCuisine((prev) =>
       prev.includes(c) ? prev.filter((item) => item !== c) : [...prev, c]
     );
   };
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const query = new URLSearchParams({
-      bedget: budget.toString(),
-      days: days.toString(),
-      cuisine: cuisine.join(","),
-    });
 
-    router.push(`/menu?${query.toString()}`);
+  const handleGenerate = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+      if (cuisine.length === 0) {
+      alert("Please select at least one cuisine");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const safeDays = Number.isFinite(days) && days > 0 ? Math.floor(days) : 1;
+      const safeBudget =
+        Number.isFinite(budget) && budget >= 0 ? Math.floor(budget) : 0;
+
+      const meals = await fetchMealPlan({
+        budget: safeBudget,
+        days: safeDays,
+        cuisine,
+      });
+
+      setResult(meals ?? []);
+    } catch (err) {
+      console.error(err);
+      alert("Error! Please Try Again");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  return (
-    <main className="font-sans flex flex-col items-center justify-center min-h-screen p-8">
-      <h1 className="text-3xl font-bold mb-6">Plan2Plate</h1>
+return (
+  <main className="font-sans flex flex-col items-center justify-center min-h-screen p-8">
+    <h1 className="text-3xl font-bold mb-6">Plan2Plate</h1>
 
-      <form
-        onSubmit={handleSubmit}
-        className="w-full max-w-md space-y-6 bg-gray-100 p-6 rounded-xl shadow"
-      >
-        <div className="flex flex-col">
-          <label htmlFor="budget" className="font-semibold mb-1">
-            💰 Budget ($)
-          </label>
-          <span className="text-lg font-semibold text-blue-600">
-            $ {budget}
-          </span>
+    <form
+      onSubmit={handleGenerate}
+      className="w-full max-w-md space-y-6 bg-gray-100 p-6 rounded-xl shadow"
+    >
+      <div className="flex flex-col">
+        <label htmlFor="budget" className="font-semibold mb-1">
+          💰 Budget ($)
+        </label>
+        <span className="text-lg font-semibold text-blue-600">$ {budget}</span>
 
-          <input
-            type="range"
-            min="0"
-            max="100"
-            value={budget}
-            onChange={(e) => setBudget(Number(e.target.value))}
-            className="
+        <input
+          type="range"
+          min="30"
+          max="100"
+          value={budget}
+          onChange={(e) => setBudget(Number(e.target.value))}
+          className="
           w-full max-w-md h-2
           bg-gray-200 rounded-lg appearance-none cursor-pointer
           accent-blue-500
@@ -69,58 +94,67 @@ export default function Home() {
           [&::-moz-range-thumb]:border-2
           [&::-moz-range-thumb]:border-white
         "
-          />
-        </div>
-        {/* Days */}
-        <div className="flex flex-col">
-          <label htmlFor="days" className="font-semibold mb-1">
-            🗓️ Number of Days
-          </label>
-          <input
-            id="days"
-            type="number"
-            value={days}
-            onChange={(e) => setDays(Number(e.target.value))}
-            className="border p-2 rounded"
-          />
-        </div>
+        />
+      </div>
+      {/* Days */}
+      <div className="flex flex-col">
+        <label htmlFor="days" className="font-semibold mb-1">
+          🗓️ Number of Days
+        </label>
+        <input
+          id="days"
+          type="number"
+          value={days}
+          min={1}
+          step={1}
+          inputMode="num"
+          onChange={(e) => setDays(Number(e.target.value))}
+          className="border p-2 rounded"
+        />
+      </div>
 
-        {/* Cuisine */}
-        <div className="flex flex-col">
-          <span className="font-semibold mb-1"> 🍴 Preferred Cuisine</span>
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={cuisine.includes("Korean")}
-              onChange={() => handleCuisineChange("Korean")}
-            />
-            Korean
-          </label>
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={cuisine.includes("Japanese")}
-              onChange={() => handleCuisineChange("Japanese")}
-            />
-            Japanese
-          </label>
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={cuisine.includes("Western")}
-              onChange={() => handleCuisineChange("Western")}
-            />
-            Western
-          </label>
-        </div>
-        {/* Submit */}
-        <button
-          type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-        >
-          Submit
-        </button>
-      </form>
-    </main>
-  );
+      {/* Cuisine */}
+      <div className="flex flex-col">
+        <span className="font-semibold mb-1"> 🍴 Preferred Cuisine</span>
+        <label className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            checked={cuisine.includes("Korean")}
+            onChange={() => handleCuisineChange("Korean")}
+          />
+          Korean
+        </label>
+        <label className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            checked={cuisine.includes("Japanese")}
+            onChange={() => handleCuisineChange("Japanese")}
+          />
+          Japanese
+        </label>
+        <label className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            checked={cuisine.includes("Western")}
+            onChange={() => handleCuisineChange("Western")}
+          />
+          Western
+        </label>
+      </div>
+      {/* Submit */}
+      <button
+        type="submit"
+        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+      >
+           {loading ? "Generating..." : "Submit"}
+      </button>
+    </form>
+{/* 
+      {result.length > 0 && (
+        <pre className="mt-6 w-full max-w-2xl overflow-auto text-sm bg-black text-white p-4 rounded-lg">
+{JSON.stringify(result, null, 2)}
+        </pre>
+      )} */}
+  </main>
+);
 }
