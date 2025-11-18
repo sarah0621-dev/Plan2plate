@@ -4,13 +4,6 @@ import { FormEvent, useState } from "react";
 import { fetchMealPlan } from "@/lib/fetchMealPlan";
 import { useRouter } from "next/navigation";
 
-type Meal = {
-  day: string;
-  meal: string;
-  ingredients: string[];
-  estimatedCost: number;
-};
-
 export default function Home() {
   const [budget, setBudget] = useState<number>(30);
   const [days, setDays] = useState<number>(1);

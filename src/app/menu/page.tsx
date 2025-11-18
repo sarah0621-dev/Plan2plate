@@ -12,7 +12,7 @@ type Meal = {
 
 export default function MenuPage() {
   const [result, setResult] = useState<Meal[]>();
-
+  console.log(result);
   useEffect(() => {
     const saved = localStorage.getItem("mealPlan");
     if(saved) setResult(JSON.parse(saved));

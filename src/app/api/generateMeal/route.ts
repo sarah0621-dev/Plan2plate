@@ -40,7 +40,7 @@ export async function POST(req: Request) {
       You must return the dinner meal plan **as a JSON object only**.  
       Do not output any introduction, explanation, commentary, or code fences.  
       The response must strictly follow the exact structure below:
-      - Total ${numDays} per dinner cusine
+      - Return exactly ${numDays} meals in total.
       - Based on 2 people
       - Total Budget is less than ${numBudget}
       - Cuisine stlye :${arrCuisine.join(",")}
