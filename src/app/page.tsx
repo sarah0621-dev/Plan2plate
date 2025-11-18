@@ -5,7 +5,7 @@ import { fetchMealPlan } from "@/lib/fetchMealPlan";
 import { useRouter } from "next/navigation";
 
 export default function Home() {
-  const [budget, setBudget] = useState<number>(30);
+  const [budget, setBudget] = useState<number>(20);
   const [days, setDays] = useState<number>(1);
   const [cuisine, setCuisine] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
@@ -25,6 +25,7 @@ export default function Home() {
       alert("Please select at least one cuisine");
       return;
     }
+
 
     try {
       setLoading(true);
@@ -50,7 +51,7 @@ export default function Home() {
 
   return (
     <main className="font-sans flex flex-col items-center justify-center min-h-screen p-8">
-      <h1 className="text-3xl font-bold mb-6">Plan2Plate</h1>
+      <h1 className="text-3xl font-bold mb-6"> 🍽️ Plan2Plate</h1>
 
       <form
         onSubmit={handleGenerate}

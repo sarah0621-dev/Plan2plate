@@ -1,7 +1,5 @@
-import type { NextApiResponse } from "next";
 import OpenAI from "openai";
 
-import { mockRecipes } from "@/data/mockRecipes";
 import { NextResponse } from "next/server";
 
 const openai = new OpenAI({
@@ -104,9 +102,4 @@ export async function POST(req: Request) {
     console.error("API Error:", e?.message || e);
     return NextResponse.json({ message: "Server error" }, { status: 500 });
   }
-}
-
-// (선택) GET 핸들러: 브라우저로 확인용
-export async function GET() {
-  return NextResponse.json({ ping: "pong" }, { status: 200 });
 }

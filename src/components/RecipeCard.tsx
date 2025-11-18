@@ -14,7 +14,7 @@ export default function RecipeCard({
   estimatedCost,
 }: Meal) {
   return (
-    <div className="bg-white rounded-2xl shadow-md p-4 hover:shadow-lg transition">
+    <div className="bg-white rounded-2xl shadow-md p-4 hover:shadow-lg transition w-full max-w-sm ">
       <h2 className="text-lg font-bold">{day}</h2>
       <h3 className="text-ml font-semibold">{meal}</h3>
       <p className="text-sm text-gray-500">{ingredients.join(", ")}</p>
