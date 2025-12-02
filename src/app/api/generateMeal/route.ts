@@ -98,8 +98,10 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json({ mealPlan }, { status: 200 });
-  } catch (e: any) {
-    console.error("API Error:", e?.message || e);
+  } catch (e: unknown) {
+    const error = e instanceof Error ? e : new Error(String(e));
+    console.error("API Error:", error);
+
     return NextResponse.json({ message: "Server error" }, { status: 500 });
   }
 }
