@@ -6,10 +6,11 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY!,
 });
 
-type Meal = {
+export type MealPlanItem = {
   day: string;
-  meal: string;
-  ingredients: string[];
+  cuisine: string;
+  mealType: string;
+  tags: string[];
   estimatedCost: number;
 };
 
@@ -35,25 +36,31 @@ export async function POST(req: Request) {
     }
 
     const prompt = `
-      You must return the dinner meal plan **as a JSON object only**.  
-      Do not output any introduction, explanation, commentary, or code fences.  
-      The response must strictly follow the exact structure below:
-      - Return exactly ${numDays} meals in total.
+      You must return the dinner meal plan **as a JSON array only**.
+      Do not output any introduction, explanation, commentary, or code fences.
+
+      Return exactly ${numDays} meals.
       - Based on 2 people
-      - Total Budget is less than ${numBudget}
-      - Cuisine stlye :${arrCuisine.join(",")}
-      - Included Cuisine name and simple ingredients list, estimatedCost
-      - estimatedCost Type is only Number (Be Consistent based on 1 person portion or Total portions)
-      - Example Format :
+      - Total weekly budget must be less than ${numBudget}
+      - Cuisines can only be from this list: ${arrCuisine.join(",")}
+      - Every item must follow this exact structure:
+
       [
-        {
-        "day" : "Monday",
-        "meal": "Bulgogi with Rice",
-        "ingredients" : ["beef", "Soysauce","Sugar","Onions","Rice"],
-        "estimateCost: 4.5
-        },
+     {
+        "day": "Monday",
+        "cuisine": "Japanese",
+        "mealType": "Dinner",
+        "tags": ["noodle", "broth", "chicken"]
+      }
       ]
-        `.trim();
+
+      Rules:
+      - "day" must be a weekday name in English.
+      - "cuisine" must be one of: ${arrCuisine.join(",")}.
+      - "mealType" must always be "Dinner".
+      - "tags" is a short list of dish keywords like ["Pizza"], ["Pasta"], ["Chicken"], ["Curry"].
+      - "estimatedCost" must be a number.
+`.trim();
 
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
@@ -79,7 +86,7 @@ export async function POST(req: Request) {
       .replace(/```$/i, "")
       .trim();
 
-    let mealPlan: Meal[];
+    let mealPlan: MealPlanItem[];
     try {
       const parsed = JSON.parse(cleaned);
       if (!Array.isArray(parsed)) {
