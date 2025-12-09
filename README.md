@@ -10,25 +10,8 @@ Meals are enriched with real recipe images and ingredients using the DummyJSON R
 - OpenAI API
 - DummyJSON Recipes API
 - LocalStorage
-
-
-## 📁 Project Structure
-
-src/
- ├─ app/
- │   ├─ api/
- │   │   └─ generateMeal/route.ts      // OpenAI meal plan generator
- │   ├─ menu/page.tsx                  // Menu page UI logic
- │   └─ page.tsx
- ├─ components/
- │   └─ RecipeCard.tsx                 // Meal card UI component
- ├─ lib/
- │   ├─ fetchAllRecipes.ts             // DummyJSON API fetcher
- │   ├─ pickRecipeByBestTagMatch.ts    // Recipe matching logic
- │   └─ getFallbackImage.ts            // Cuisine-based fallback images
-public/
- └─ fallback/                          // Fallback images by cuisine
  
+<img width="732" height="824" alt="Screenshot 2025-12-09 at 5 32 38 PM" src="https://github.com/user-attachments/assets/5cc5d064-a495-4b17-9b1f-eec66c55b07b" />
 
 ## 🛠️ Getting Started
 ```bash
