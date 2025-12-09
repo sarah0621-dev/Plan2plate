@@ -8,6 +8,7 @@ const openai = new OpenAI({
 
 export type MealPlanItem = {
   day: string;
+  name: string;
   cuisine: string;
   mealType: string;
   tags: string[];
@@ -21,6 +22,8 @@ export async function POST(req: Request) {
     const numBudget = Number(budget);
     const numDays = Number(days);
     const arrCuisine: string[] = Array.isArray(cuisine) ? cuisine : [];
+
+    console.log(arrCuisine,"!!!!!!!!!!!!arrCuisine");
 
     if (!Number.isFinite(numBudget) || numBudget < 0) {
       return NextResponse.json({ message: "Invalid budget" }, { status: 400 });
@@ -48,16 +51,20 @@ export async function POST(req: Request) {
       [
      {
         "day": "Monday",
+        "name": "Chicken Udon",
         "cuisine": "Japanese",
         "mealType": "Dinner",
-        "tags": ["noodle", "broth", "chicken"]
+        "tags": ["noodle", "broth", "chicken"],
+        "estimatedCost": 7.5
       }
       ]
 
       Rules:
       - "day" must be a weekday name in English.
-      - "cuisine" must be one of: ${arrCuisine.join(",")}.
-      - "mealType" must always be "Dinner".
+      - The "cuisine" field MUST be selected exclusively from this exact list and NOTHING else: [${arrCuisine.join(", ")}].
+      - If a cuisine not in this list is needed, do NOT generate a meal.
+      - The output must strictly obey this rule.
+     - "mealType" must always be "Dinner".
       - "tags" is a short list of dish keywords like ["Pizza"], ["Pasta"], ["Chicken"], ["Curry"].
       - "estimatedCost" must be a number.
 `.trim();

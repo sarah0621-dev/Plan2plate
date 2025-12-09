@@ -1,39 +1,45 @@
 import React from "react";
 import Image from "next/image";
 
-type Meal = {
+type RecipeCard = {
   day: string;
   meal: string;
   ingredients: string[];
   estimatedCost: number;
   img?: string;
+  cuisine: string;
 };
 
 export default function RecipeCard({
-  day,
   meal,
-  ingredients,
   estimatedCost,
   img,
-}: Meal) {
+  cuisine,
+}: RecipeCard) {
   return (
     <div className="bg-white rounded-2xl shadow-md p-4 hover:shadow-lg transition w-full max-w-sm ">
-      {img && (
+      <div className="relative w-full h-48 mb-3">
         <Image
-          src={img}
+          src={img ?? "/fallback/default.jpg"}
           alt={meal}
-          width={300}
-          height={200}
-          className="rounded-xl object-cover w-full h-48"
+          fill
+          className="object-cover rounded-xl"
         />
-      )}
-      <h2 className="text-lg font-bold">{day}</h2>
-      <h3 className="text-ml font-semibold">{meal}</h3>
-      <p className="text-sm text-gray-500">{ingredients.join(", ")}</p>
+
+        <span className="absolute top-2 left-2 bg-black/60 text-white text-xs font-semibold px-2 py-1 rounded-full backdrop-blur">
+          {cuisine}
+        </span>
+      </div>
+      <h3 className="text-ml font-semibold pt-3">{meal}</h3>
       <p className="text-sm text-gray-500">
         {" "}
         Estimated Cost : ${estimatedCost}
       </p>
+      <div className="flex justify-end">
+        <button className="cursor-pointer border-blue-500 px-2 py-2 rounded hover:shadow-lg">
+          See Details
+        </button>
+      </div>
     </div>
   );
 }

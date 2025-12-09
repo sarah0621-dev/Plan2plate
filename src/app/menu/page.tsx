@@ -6,13 +6,13 @@ import {
   fetchAllRecipes,
   pickRecipeByBestTagMatch,
   type MealPlanItem,
-  type RecipeApi,
 } from "@/lib/fetchRecipes";
+import { getFallbackImage } from "@/lib/getFakkbackImage";
 
-type EnrichedMeal = MealPlanItem & {
-  name: string;
+export type EnrichedMeal = MealPlanItem & {
   image?: string;
-  ingredients: string[];
+  ingredients?: string[];
+  matchedRecipeId?: number | null;
 };
 
 export default function MenuPage() {
@@ -37,9 +37,8 @@ export default function MenuPage() {
           if (!recipe) {
             return {
               ...meal,
-              name: `${meal.cuisine} ${meal.mealType}`,
               ingredients: [],
-              image: undefined,
+              image: getFallbackImage(meal.cuisine),
             };
           }
 
@@ -53,7 +52,6 @@ export default function MenuPage() {
 
           return {
             ...meal,
-            name: recipe.name,
             ingredients: recipe.ingredients,
             image: recipe.image,
             estimatedCost: cost,
@@ -89,9 +87,10 @@ export default function MenuPage() {
               key={idx}
               day={item.day}
               meal={item.name}
-              ingredients={item.ingredients}
+              ingredients={item.ingredients ?? []}
               estimatedCost={item.estimatedCost}
               img={item.image}
+              cuisine={item.cuisine}
             />
           ))}
         </div>

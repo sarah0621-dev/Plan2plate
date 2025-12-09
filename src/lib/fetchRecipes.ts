@@ -27,6 +27,7 @@ export async function fetchAllRecipes(): Promise<RecipeApi[]> {
 }
 
 export type MealPlanItem = {
+  name: string;
   day: string;
   cuisine: string;
   mealType: string;
@@ -34,22 +35,18 @@ export type MealPlanItem = {
   estimatedCost: number;
 };
 
-
 export function pickRecipeByBestTagMatch(
   meal: MealPlanItem,
   recipes: RecipeApi[],
-    usedIds: Set<number>
+  usedIds: Set<number>
 ): RecipeApi | null {
   const mealCuisine = meal.cuisine.toLowerCase();
   const mealTags = meal.tags.map((t) => t.toLowerCase());
 
-
-   const sameCuisineRecipes = recipes.filter(
-    (r) =>
-      r.cuisine.toLowerCase() === mealCuisine && !usedIds.has(r.id)
+  const sameCuisineRecipes = recipes.filter(
+    (r) => r.cuisine.toLowerCase() === mealCuisine && !usedIds.has(r.id)
   );
 
-  
   const candidates =
     sameCuisineRecipes.length > 0
       ? sameCuisineRecipes
@@ -57,7 +54,6 @@ export function pickRecipeByBestTagMatch(
 
   if (candidates.length === 0) return null;
 
-  
   const scored = candidates.map((recipe) => {
     const recipeTags = recipe.tags.map((t) => t.toLowerCase());
     const overlapCount = mealTags.filter((tag) =>
@@ -68,14 +64,13 @@ export function pickRecipeByBestTagMatch(
   });
 
   const maxScore = Math.max(...scored.map((s) => s.score));
+  if (maxScore === 0) {
+    return null;
+  }
 
-  
   const bestMatches = scored.filter((s) => s.score === maxScore);
-
-  
   const chosen =
     bestMatches[Math.floor(Math.random() * bestMatches.length)].recipe;
 
   return chosen;
-  };
-
+}
