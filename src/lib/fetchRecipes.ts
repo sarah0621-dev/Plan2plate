@@ -33,7 +33,9 @@ export type MealPlanItem = {
   mealType: string;
   tags: string[];
   estimatedCost: number;
-};
+  instructions:string[];
+}
+;
 
 export function pickRecipeByBestTagMatch(
   meal: MealPlanItem,

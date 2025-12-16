@@ -148,12 +148,6 @@ export default function Home() {
           {loading ? "Generating..." : "Submit"}
         </button>
       </form>
-      {/* 
-      {result.length > 0 && (
-        <pre className="mt-6 w-full max-w-2xl overflow-auto text-sm bg-black text-white p-4 rounded-lg">
-{JSON.stringify(result, null, 2)}
-        </pre>
-      )} */}
     </main>
   );
 }

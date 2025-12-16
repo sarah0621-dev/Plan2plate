@@ -91,6 +91,7 @@ export default function MenuPage() {
               estimatedCost={item.estimatedCost}
               img={item.image}
               cuisine={item.cuisine}
+              instructions={item.instructions}
             />
           ))}
         </div>

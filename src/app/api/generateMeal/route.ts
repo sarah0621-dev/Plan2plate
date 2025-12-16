@@ -49,11 +49,23 @@ export async function POST(req: Request) {
       [
      {
         "day": "Monday",
-        "name": "Chicken Udon",
-        "cuisine": "Japanese",
+        "name": "Classic Margherita Pizza",
+        "cuisine": "Italian",
         "mealType": "Dinner",
-        "tags": ["noodle", "broth", "chicken"],
-        "estimatedCost": 7.5
+         "tags": ["Pizza","Italian"],
+        "estimatedCost": 7.5,
+        "instructions": [
+         "Preheat the oven to 475°F (245°C).",
+        "Roll out the pizza dough and spread tomato sauce evenly.",
+        "Top with slices of fresh mozzarella and fresh basil leaves.",
+        "Drizzle with olive oil and season with salt and pepper.",
+        "Bake in the preheated oven for 12-15 minutes or until the crust is golden brown.",
+        "Slice and serve hot."
+        ],
+        "prepTimeMinutes": 20,
+        "cookTimeMinutes": 15,
+        "difficulty": "Easy",
+
       }
       ]
 
